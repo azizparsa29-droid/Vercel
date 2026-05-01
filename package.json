@@ -1,7 +1,10 @@
 {
-  "name": "vercel-xhttp-relay",
-  "version": "1.0.0",
-  "description": "Test Edge",
-  "private": true,
-  "license": "MIT"
+    "name": "vercel-xhttp-relay",
+    "version": "1.0.0",
+    "description": "Test Edge",
+    "private": true,
+    "license": "MIT",
+    "scripts": {
+        "start": "node index.js"
+    }
 }
