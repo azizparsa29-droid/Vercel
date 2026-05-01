@@ -1,6 +1,8 @@
 const http = require('http');
 
-const TARGET = process.env.TARGET_DOMAIN || 'vercel.passshonan.sbs:2096';
+let TARGET = process.env.TARGET_DOMAIN || 'vercel.parsashonan.sbs:2096';
+// حذف http:// و https:// از ابتدای آدرس اگر وجود داشت
+TARGET = TARGET.replace(/^https?:\/\//, '');
 
 const server = http.createServer((req, res) => {
     const options = {
