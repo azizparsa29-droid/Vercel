@@ -1,10 +1,8 @@
 const http = require('http');
 
-const TARGET = process.env.TARGET_DOMAIN || 'vercel.parsashonan.sbs:2096';
-
 const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Proxy is working!');
+    res.end('Server is working!');
 });
 
 const PORT = process.env.PORT || 10000;
