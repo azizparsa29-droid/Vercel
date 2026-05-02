@@ -1,31 +1,13 @@
 const http = require('http');
 
-let TARGET = process.env.TARGET_DOMAIN || 'vercel.parsashonan.sbs:2096';
-// حذف http:// و https:// از ابتدای آدرس اگر وجود داشت
-TARGET = TARGET.replace(/^https?:\/\//, '');
+const TARGET = process.env.TARGET_DOMAIN || 'vercel.parsashonan.sbs:2096';
 
 const server = http.createServer((req, res) => {
-    const options = {
-        hostname: TARGET.split(':')[0],
-        port: TARGET.split(':')[1] || 80,
-        path: req.url,
-        method: req.method,
-        headers: req.headers
-    };
-
-    const proxy = http.request(options, (proxyRes) => {
-        res.writeHead(proxyRes.statusCode, proxyRes.headers);
-        proxyRes.pipe(res, { end: true });
-    });
-
-    req.pipe(proxy, { end: true });
-    proxy.on('error', (err) => {
-        res.writeHead(500);
-        res.end('Tunnel error: ' + err.message);
-    });
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Proxy is working!');
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Tunnel running on port ${PORT} -> ${TARGET}`);
+const PORT = process.env.PORT || 10000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
 });
