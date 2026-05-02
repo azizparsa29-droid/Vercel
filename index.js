@@ -1,28 +1,35 @@
 const http = require('http');
-const net = require('net');
+const https = require('https');
 const url = require('url');
+
+const TARGET = process.env.TARGET_DOMAIN || 'vercel.parsashonam.sbs:2096';
+const TARGET_HOST = TARGET.split(':')[0];
+const TARGET_PORT = TARGET.split(':')[1] || 443;
 
 const server = http.createServer((req, res) => {
     const reqUrl = url.parse(req.url);
-
-    if (reqUrl.pathname === '/p4r34m') {
-        const socket = net.connect(2096, 'vercel.parsashonam.sbs', () => {
-            res.writeHead(200, { 'Connection': 'Upgrade', 'Upgrade': 'websocket' });
-            res.on('data', chunk => socket.write(chunk));
-            socket.on('data', chunk => res.write(chunk));
-            socket.on('end', () => res.end());
-        });
-        socket.on('error', (err) => {
-            res.writeHead(500);
-            res.end('Proxy error');
-        });
-    } else {
-        res.writeHead(404);
-        res.end('Not Found');
-    }
+    
+    const options = {
+        hostname: TARGET_HOST,
+        port: TARGET_PORT,
+        path: reqUrl.path,
+        method: req.method,
+        headers: req.headers
+    };
+    
+    const proxy = http.request(options, (proxyRes) => {
+        res.writeHead(proxyRes.statusCode, proxyRes.headers);
+        proxyRes.pipe(res);
+    });
+    
+    req.pipe(proxy);
+    proxy.on('error', (e) => {
+        res.writeHead(500);
+        res.end('Proxy error');
+    });
 });
 
-const PORT = process.env.PORT || 10000;
-server.listen(PORT, '0.0.0.0', () => {
-    console.log(`VLESS proxy running on port ${PORT}`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Proxy running on ${PORT} -> ${TARGET_HOST}:${TARGET_PORT}`);
 });
